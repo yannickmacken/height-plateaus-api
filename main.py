@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from starlette import status
 from starlette.requests import Request
 from uvicorn import run
 
@@ -12,16 +13,20 @@ async def read_building_limit(project_id: int):
     return {"project_id": project_id}
 
 
-@app.post("/{project_id}/building-limit")
+@app.post("/{project_id}/building-limit", status_code=status.HTTP_201_CREATED)
 async def create_building_limit(project_id: int, request: Request):
     geo_json = await request.body()
 
-    # Create split building limits and update on database
-    split_building_limit_by_height_plateau(building_limit=geo_json)
-
     # Save building limit on database
 
-    return {"request": await request.body()}
+    # Create split building limits and update on database
+    try:
+        split_building_limit_by_height_plateau(
+            project_id=project_id, building_limit=geo_json
+        )
+    except Exception as e:
+        return {"Split building limit status": e}
+    return {"Split building limit status": "success"}
 
 
 @app.get("/{project_id}/height-plateau")
@@ -29,16 +34,20 @@ async def read_height_plateau(project_id: int):
     return {"project_id": project_id}
 
 
-@app.post("/{project_id}/height-plateau")
+@app.post("/{project_id}/height-plateau", status_code=status.HTTP_201_CREATED)
 async def create_height_plateau(project_id: int, request: Request):
     geo_json = await request.body()
 
-    # Create split building limits and update on database
-    split_building_limit_by_height_plateau(height_plateau=geo_json)
-
     # Save height plateau on database
 
-    return {"project_id": project_id}
+    # Create split building limits and update on database
+    try:
+        split_building_limit_by_height_plateau(
+            project_id=project_id, height_plateau=geo_json
+        )
+    except Exception as e:
+        return {"Split building limit status": e}
+    return {"Split building limit status": "success"}
 
 
 @app.get("/{project_id}/split-building-limit")

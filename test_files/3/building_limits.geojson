@@ -5,7 +5,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Polygon",
-        "coordinates": [
+        "coordinates": [[
           [
             4.869235566300465,
             52.349103891408014
@@ -34,7 +34,7 @@
             4.869235566300465,
             52.349103891408014
           ]
-        ]
+        ]]
       },
       "properties": {}
     }

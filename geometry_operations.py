@@ -1,3 +1,4 @@
+import json
 from json import loads
 from pathlib import Path
 from typing import List, Dict, Tuple
@@ -23,6 +24,7 @@ def parse_feature(feature: Dict) -> Tuple[Polygon, Dict]:
 
 
 def split_building_limit_by_height_plateau(
+    project_id: int,
     building_limit: bytes = None,
     height_plateau: bytes = None,
 ):
@@ -30,15 +32,18 @@ def split_building_limit_by_height_plateau(
     resulting 'split building limits' to NoSQL database."""
 
     # Get building limit or height plateaus from database
-    test = 1
     if not building_limit:
         building_limit = Path.read_bytes(
-            Path(__file__).parent / "test_files" / str(test) / "building_limits.geojson"
+            Path(__file__).parent / "test_files" / str(project_id) / "building_limits.geojson"
         )
     if not height_plateau:
         height_plateau = Path.read_bytes(
-            Path(__file__).parent / "test_files" / str(test) / "height_plateaus.geojson"
+            Path(__file__).parent / "test_files" / str(project_id) / "height_plateaus.geojson"
         )
+
+    # If building limit or height plateau not defined, raise Exception
+    if not all([building_limit, height_plateau]):
+        raise Exception("Building limit could not be split.")
 
     # Parse GeoJSONs to shapely polygons and properties
     parsed_building_limits = parse_feature_collection(building_limit)
@@ -58,7 +63,6 @@ def split_building_limit_by_height_plateau(
     # Split building limits by height plateaus
     for polygon, props in parsed_height_plateaus:
         intersection = building_limit_polygon.intersection(polygon)
-        print("intersection", intersection)
         if intersection and isinstance(intersection, Polygon):
 
             # Add feature to split building limits GeoJSON
@@ -76,4 +80,5 @@ def split_building_limit_by_height_plateau(
             }
             split_building_limits_geo_json["features"].append(feature)
 
-    print("features", split_building_limits_geo_json)
+    # Save split building limits to database
+    geo_json_string = json.dumps(split_building_limits_geo_json)

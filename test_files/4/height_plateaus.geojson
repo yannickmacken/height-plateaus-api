@@ -5,7 +5,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Polygon",
-        "coordinates": [
+        "coordinates": [[
           [
             4.872532556493814,
             52.34929317110418
@@ -26,7 +26,7 @@
             4.872532556493814,
             52.34929317110418
           ]
-        ]
+        ]]
       },
       "properties": {
         "height": 0.2
@@ -36,7 +36,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Polygon",
-        "coordinates": [
+        "coordinates": [[
           [
             4.87106902836239,
             52.34940627760248
@@ -93,7 +93,7 @@
             4.87106902836239,
             52.34940627760248
           ]
-        ]
+        ]]
       },
       "properties": {
         "height": 0.4
@@ -103,7 +103,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Polygon",
-        "coordinates": [
+        "coordinates": [[
           [
             4.872530657409479,
             52.34924824301563
@@ -124,7 +124,7 @@
             4.872530657409479,
             52.34924824301563
           ]
-        ]
+        ]]
       },
       "properties": {
         "height": 0.8
@@ -134,7 +134,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Polygon",
-        "coordinates": [
+        "coordinates": [[
           [
             4.871323028863556,
             52.34951015381627
@@ -155,7 +155,7 @@
             4.871323028863556,
             52.34951015381627
           ]
-        ]
+        ]]
       },
       "properties": {
         "height": 0.8
@@ -165,7 +165,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Polygon",
-        "coordinates": [
+        "coordinates": [[
           [
             4.8710652331507545,
             52.34931642135162
@@ -198,7 +198,7 @@
             4.8710652331507545,
             52.34931642135162
           ]
-        ]
+        ]]
       },
       "properties": {
         "height": 0.6
@@ -208,7 +208,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Polygon",
-        "coordinates": [
+        "coordinates": [[
           [
             4.871060678923168,
             52.34920859384851
@@ -237,7 +237,7 @@
             4.871060678923168,
             52.34920859384851
           ]
-        ]
+        ]]
       },
       "properties": {
         "height": 0.4
@@ -247,7 +247,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Polygon",
-        "coordinates": [
+        "coordinates": [[
           [
             4.87105119104145,
             52.348983953209796
@@ -268,7 +268,7 @@
             4.87105119104145,
             52.348983953209796
           ]
-        ]
+        ]]
       },
       "properties": {
         "height": 0.2
