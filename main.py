@@ -6,7 +6,6 @@ from uvicorn import run
 from database import get_database
 from geometry_operations import split_building_limit_by_height_plateau
 
-
 # Init app and connect to db
 app = FastAPI()
 db = get_database()

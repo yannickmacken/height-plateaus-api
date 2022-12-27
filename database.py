@@ -1,6 +1,5 @@
 import os
 
-from pymongo import MongoClient
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -9,5 +8,7 @@ load_dotenv()
 def get_database():
     """Connect to MongoDB NoSQL database."""
     db_url = os.getenv('DATABASE_URL')
-    client = MongoClient(db_url)
-    return client.height_plateaus
+    client = motor.motor_asyncio.AsyncIOMotorClient(db_url)
+    client.get_io_loop = asyncio.get_running_loop
+    db = client['height_plateaus']
+    return db
