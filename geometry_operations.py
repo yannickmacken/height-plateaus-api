@@ -30,13 +30,14 @@ def split_building_limit_by_height_plateau(
     resulting 'split building limits' to NoSQL database."""
 
     # Get building limit or height plateaus from database
+    test = 1
     if not building_limit:
         building_limit = Path.read_bytes(
-            Path(__file__).parent / "test_files" / "building_limit.json"
+            Path(__file__).parent / "test_files" / str(test) / "building_limits.geojson"
         )
     if not height_plateau:
         height_plateau = Path.read_bytes(
-            Path(__file__).parent / "test_files" / "height_plateau.json"
+            Path(__file__).parent / "test_files" / str(test) / "height_plateaus.geojson"
         )
 
     # Parse GeoJSONs to shapely polygons and properties
