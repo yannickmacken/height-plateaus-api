@@ -3,9 +3,14 @@ from starlette import status
 from starlette.requests import Request
 from uvicorn import run
 
+from database import get_database
 from geometry_operations import split_building_limit_by_height_plateau
 
+
+# Init app and connect to db
 app = FastAPI()
+db = get_database()
+collection = db["projects"]
 
 
 @app.get("/{project_id}/building-limit")
@@ -18,6 +23,9 @@ async def create_building_limit(project_id: int, request: Request):
     geo_json = await request.body()
 
     # Save building limit on database
+    project = collection.find_one({"project_id": project_id})
+    print("project", project)
+    # collection.insert_one({"project_id": project_id})
 
     # Create split building limits and update on database
     try:
