@@ -26,14 +26,14 @@ async def save_geometry_to_database(db, project_id: int, geo_json: Dict, key: st
     Return result id."""
 
     # Save geometry to database
-    result = await db.projects.update_one(
+    result = await db.projects.find_one_and_update(
         filter={'project_id': project_id},
         update={'$set': {key: geo_json}},
         upsert=True
     )
 
-    # If no match, modification or document added, raise HTTP Exception
-    if not any([result.matched_count, result.modified_count, result.upserted_id]):
+    # If no document added or changed, raise HTTP Exception
+    if not result:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"{project_id} - {key} could not be updated in database."
