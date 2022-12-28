@@ -1,17 +1,13 @@
-import json
-from json import loads
-from pathlib import Path
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Optional
 
 from shapely.geometry import shape
 from shapely.geometry.polygon import Polygon
 
 
-def parse_feature_collection(geo_json: bytes) -> List[Tuple[Polygon, Dict]]:
+def parse_feature_collection(geo_json: Dict) -> List[Tuple[Polygon, Dict]]:
     """Convert feature collection into list of polygons and properties."""
-    feature_collection = loads(geo_json)
     feature_list = []
-    for feature in feature_collection["features"]:
+    for feature in geo_json["features"]:
         feature_list.append(parse_feature(feature))
     return feature_list
 
@@ -23,35 +19,16 @@ def parse_feature(feature: Dict) -> Tuple[Polygon, Dict]:
     return polygon, props
 
 
-def split_building_limit_by_height_plateau(
-    project_id: int,
-    building_limit: bytes = None,
-    height_plateau: bytes = None,
-):
-    """Split building limit (GeoJSON) by height plateau (GeoJSON), and save
-    resulting 'split building limits' to NoSQL database."""
-
-    # Get building limit or height plateaus from database
-    if not building_limit:
-        building_limit = Path.read_bytes(
-            Path(__file__).parent / "test_files" / str(project_id) / "building_limits.geojson"
-        )
-    if not height_plateau:
-        height_plateau = Path.read_bytes(
-            Path(__file__).parent / "test_files" / str(project_id) / "height_plateaus.geojson"
-        )
-
-    # If building limit or height plateau not defined, raise Exception
-    if not all([building_limit, height_plateau]):
-        raise Exception("Building limit could not be split.")
+def split_building_limit_by_height(
+    building_limit: Dict,
+    height_plateau: Dict,
+) -> Optional[Dict]:
+    """Split building limit (GeoJSON) by height plateau (GeoJSON), and return
+    resulting 'split building limits' as GeoJSON."""
 
     # Parse GeoJSONs to shapely polygons and properties
     parsed_building_limits = parse_feature_collection(building_limit)
     parsed_height_plateaus = parse_feature_collection(height_plateau)
-    if len(parsed_building_limits) != 1:
-        raise Exception("One building limit allowed/required.")
-    if len(parsed_height_plateaus) < 1:
-        raise Exception("At least one height plateau polygon required.")
     building_limit_polygon, _ = parsed_building_limits[0]
 
     # Initialize empty featurecollection GeoJSON for split building limits
@@ -80,5 +57,5 @@ def split_building_limit_by_height_plateau(
             }
             split_building_limits_geo_json["features"].append(feature)
 
-    # Save split building limits to database
-    geo_json_string = json.dumps(split_building_limits_geo_json)
+    # Return GeoJSON string of split building limits
+    return split_building_limits_geo_json
