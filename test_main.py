@@ -11,7 +11,7 @@ client = TestClient(app)
 
 
 class TestAPI(unittest.TestCase):
-    """Test class for API."""
+    """Test class for API. Post requests will write to development db."""
 
     # Setup
     project_id = 1

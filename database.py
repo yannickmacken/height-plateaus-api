@@ -35,8 +35,8 @@ async def save_geometry_to_database(db, project_id: int, geo_json: Dict, key: st
     # If no match, modification or document added, raise HTTP Exception
     if not any([result.matched_count, result.modified_count, result.upserted_id]):
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail=f"{key} could not be updated."
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"{project_id} - {key} could not be updated in database."
         )
 
 
