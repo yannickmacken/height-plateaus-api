@@ -48,3 +48,15 @@ async def get_geometry_from_database(db, project_id: int, key: str) -> Optional[
     if document:
         return document.get(key, None)
     return None
+
+
+async def save_and_get(
+        db, project_id: int, save_geo_json: Dict, save_key: str, get_key: str,
+) -> Dict:
+    """Asynchronously save geometry and get geometry from database.
+    Improves request performance significantly."""
+    _, get_geo_json = await asyncio.gather(
+        save_geometry_to_database(db, project_id, save_geo_json, save_key),
+        get_geometry_from_database(db, project_id, get_key)
+    )
+    return get_geo_json
