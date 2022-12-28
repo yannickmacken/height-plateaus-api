@@ -1,5 +1,6 @@
 from typing import List, Dict, Tuple, Optional
 
+from shapely import MultiPolygon
 from shapely.geometry import shape
 from shapely.geometry.polygon import Polygon, orient
 
@@ -19,6 +20,24 @@ def parse_feature(feature: Dict) -> Tuple[Polygon, Dict]:
     return polygon, props
 
 
+def add_polygon_to_collection(collection: Dict, polygon: Polygon, props: Dict):
+    """Adds polygon geometry and props to GeoJSON collection."""
+    intersection = orient(polygon, 1)  # Exterior counter-clockwise
+    feature = {
+        "type": "Feature",
+        "properties": {
+            "height": props["height"]
+        },
+        "geometry": {
+            "type": "Polygon",
+            "coordinates": [[
+                list(c) for c in list(intersection.exterior.coords)
+            ]]
+        }
+    }
+    collection["features"].append(feature)
+
+
 def split_building_limit_by_height(
     building_limit: Dict,
     height_plateau: Dict,
@@ -31,7 +50,7 @@ def split_building_limit_by_height(
     parsed_height_plateaus = parse_feature_collection(height_plateau)
     building_limit_polygon, _ = parsed_building_limits[0]
 
-    # Initialize empty featurecollection GeoJSON for split building limits
+    # Initialize empty feature collection GeoJSON for split building limits
     split_building_limits_geo_json = {
             "type": "FeatureCollection",
             "features": []
@@ -40,23 +59,20 @@ def split_building_limit_by_height(
     # Split building limits by height plateaus
     for polygon, props in parsed_height_plateaus:
         intersection = building_limit_polygon.intersection(polygon)
-        if intersection and isinstance(intersection, Polygon):
 
-            # Add feature to split building limits GeoJSON
-            intersection = orient(intersection, 1)  # Exterior counter-clockwise
-            feature = {
-                "type": "Feature",
-                "properties": {
-                    "height": props["height"]
-                },
-                "geometry": {
-                    "type": "Polygon",
-                    "coordinates": [[
-                        list(c) for c in list(intersection.exterior.coords)
-                    ]]
-                }
-            }
-            split_building_limits_geo_json["features"].append(feature)
+        # If resulting overlap is polygon, add to collection
+        if intersection and isinstance(intersection, Polygon):
+            add_polygon_to_collection(
+                split_building_limits_geo_json, intersection, props
+            )
+
+        # If resulting overlap is multi-polygon, add all to collection
+        elif isinstance(intersection, MultiPolygon):
+            for sub_polygon in list(intersection.geoms):
+                if isinstance(sub_polygon, Polygon):
+                    add_polygon_to_collection(
+                        split_building_limits_geo_json, sub_polygon, props
+                    )
 
     # Return GeoJSON string of split building limits
     return split_building_limits_geo_json
