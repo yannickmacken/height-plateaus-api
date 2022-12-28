@@ -3,11 +3,9 @@ import json
 from fastapi import FastAPI
 from starlette import status
 from starlette.requests import Request
-from uvicorn import run
 
 from database import get_database, save_geometry_to_database, get_geometry_from_database
 from geometry_operations import split_building_limit_by_height
-
 
 # Init app and connect to db
 app = FastAPI()
