@@ -11,6 +11,6 @@ def get_database():
     """Connect to MongoDB NoSQL database."""
     db_url = os.getenv('DATABASE_URL')
     client = motor.motor_asyncio.AsyncIOMotorClient(db_url)
-    client.get_io_loop = asyncio.get_running_loop
+    client.get_io_loop = asyncio.get_running_loop  # Match motor loop to existing loop
     db = client['height_plateaus']
     return db
