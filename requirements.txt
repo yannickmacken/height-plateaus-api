@@ -3,3 +3,4 @@ uvicorn==0.20.0
 shapely==2.0.0
 motor==3.1.1
 python-dotenv
+httpx==0.23.1

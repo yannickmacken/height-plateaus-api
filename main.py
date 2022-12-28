@@ -23,7 +23,7 @@ async def create_building_limit(project_id: int, request: Request):
 
     # Save building limit on database
     document = {"test": 'yeahh'}
-    result = await db.projects.insert_one(document)
+    await db.projects.insert_one(document)
 
     # Create split building limits and update on database
     try:
