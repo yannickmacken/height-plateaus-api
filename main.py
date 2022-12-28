@@ -4,9 +4,9 @@ from fastapi import FastAPI
 from starlette import status
 from starlette.requests import Request
 
-from database import get_database, save_geometry_to_database, get_geometry_from_database
+from database import get_database, save_geometry_to_database, \
+    get_geometry_from_database, save_and_get
 from geometry_operations import split_building_limit_by_height
-
 
 # Init app and connect to database
 app = FastAPI()
@@ -29,11 +29,12 @@ async def create_building_limit(project_id: int, request: Request):
     geo_json = await request.body()
     building_limit = json.loads(geo_json)
 
-    # Save building limit to database
-    await save_geometry_to_database(db, project_id, building_limit, 'building_limit')
+    # Save building limit and get height plateau asynchronously from database
+    height_plateau = await save_and_get(
+        db, project_id, building_limit, 'building_limit', 'height_plateau'
+    )
 
     # Create split building limits and save to database
-    height_plateau = await get_geometry_from_database(db, project_id, 'height_plateau')
     if height_plateau:
         split_building_limit = split_building_limit_by_height(
             building_limit, height_plateau
@@ -65,11 +66,12 @@ async def create_height_plateau(project_id: int, request: Request):
     geo_json = await request.body()
     height_plateau = json.loads(geo_json)
 
-    # Save height plateau to database
-    await save_geometry_to_database(db, project_id, height_plateau, 'height_plateau')
+    # Save height plateau and get building limit asynchronously from database
+    building_limit = await save_and_get(
+        db, project_id, height_plateau, 'height_plateau', 'building_limit'
+    )
 
     # Create split building limits and save to database
-    building_limit = await get_geometry_from_database(db, project_id, 'building_limit')
     if building_limit:
         split_building_limit = split_building_limit_by_height(
             building_limit, height_plateau
