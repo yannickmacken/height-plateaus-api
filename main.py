@@ -93,7 +93,3 @@ async def read_split_building_limit(project_id: int):
         db, project_id, 'split_building_limit'
     )
     return split_building_limit
-
-
-if __name__ == "__main__":
-    run(app, host="127.0.0.1", port=8000, reload=True)
