@@ -73,7 +73,7 @@ async def create_height_plateau(project_id: int, request: Request):
     building_limit = await get_geometry_from_database(db, project_id, 'building_limit')
     if building_limit:
         split_building_limit = split_building_limit_by_height(
-            height_plateau, height_plateau
+            building_limit, height_plateau
         )
         await save_geometry_to_database(
             db, project_id, split_building_limit, 'split_building_limit'

@@ -1,7 +1,7 @@
 from typing import List, Dict, Tuple, Optional
 
 from shapely.geometry import shape
-from shapely.geometry.polygon import Polygon
+from shapely.geometry.polygon import Polygon, orient
 
 
 def parse_feature_collection(geo_json: Dict) -> List[Tuple[Polygon, Dict]]:
@@ -43,6 +43,7 @@ def split_building_limit_by_height(
         if intersection and isinstance(intersection, Polygon):
 
             # Add feature to split building limits GeoJSON
+            intersection = orient(intersection, 1)  # Exterior counter-clockwise
             feature = {
                 "type": "Feature",
                 "properties": {
